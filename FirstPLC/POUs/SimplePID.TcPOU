@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.8">
+  <POU Name="SimplePID" Id="{21e2a98c-6574-443d-9767-593348ffb488}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK SimplePID
+VAR_INPUT
+	lrActualPosition : LREAL := 0.0;
+	lrSetpointPosition : LREAL := 0.0;
+	lrKp : LREAL := 1.0;
+	lrTn :LREAL := 1.0;
+	lrTv : LREAL := 0.0;
+	lrTd : LREAL := 0.0;
+	bStart : BOOL := FALSE;
+END_VAR
+
+VAR_OUTPUT
+	lrControlOutput : LREAL :=0.0;
+END_VAR
+
+VAR
+	lrTs : LREAL := 0.001; //1ms
+	nState : INT := 0;	
+	lrError : LREAL := 0.0;
+	lrD : LREAL := 0.0;
+	lrKi : Lreal := 0.0;
+	lrKd: LREAL := 0.0;
+	lrK1: LREAL := 0.0;
+	lrP: LREAL := 0.0;
+	lrI: LREAL := 0.0;
+	lrLastI: LREAL := 0.0;
+	lrLastError: LREAL := 0.0;
+	lrLastD: LREAL := 0.0;
+	
+	MAX_INTEGRAL: LREAL := 1;
+	MIN_INTEGRAL: LREAL := -1;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE nState OF 
+	0:
+		IF bStart THEN
+			nState := 10;
+		END_IF
+	
+	10:
+		IF bStart = FALSE THEN
+			nState := 0;	
+		END_IF
+		
+		lrError := lrSetpointPosition - lrActualPosition;
+		lrKi := lrKp * lrTs / lrTn;
+		lrKd := lrKp * lrTv / (lrTd + lrTs);
+		lrK1 := lrTd / (lrTd + lrTs);
+		lrP := lrKp * lrError;
+		lrI := lrLastI + lrKi * lrError; 
+		lrD := lrK1 * lrLastD + lrKd * (lrError - lrLastError);
+		lrControlOutput := lrP + lrI + lrD;
+		
+		//Integrator wind up
+		
+		IF lrI > MAX_INTEGRAL THEN
+			lrI := MAX_INTEGRAL;
+		ELSIF lrI < MIN_INTEGRAL THEN
+			lrI := MIN_INTEGRAL;
+		END_IF
+		
+		lrLastError := lrError;
+		lrLastD := lrD;
+		lrLastI := lrI;
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="SimplePID">
+      <LineId Id="34" Count="15" />
+      <LineId Id="67" Count="5" />
+      <LineId Id="78" Count="3" />
+      <LineId Id="73" Count="4" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.8">
+  <POU Name="PlantNo2" Id="{f6f3a758-0fca-4012-ae53-b14f819c7514}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PlantNo2
+VAR_INPUT
+	lrInput : LREAL := 0.0;	
+	
+	lrM : LREAL := 4.72;
+	lrC : LREAL := 2.9657;
+	
+	
+END_VAR
+
+VAR_OUTPUT
+	lrOutput : LREAL := 0.0;
+END_VAR
+
+VAR
+	arAccelerationHistory : ARRAY[0..5] OF LREAL := [0.0, 0.0, 0, 0, 0, 0];
+	arVeloHistory : ARRAY[0..5] OF LREAL := [0.0, 0.0, 0, 0, 0, 0];
+	arPositionHistory : ARRAY[0..5] OF LREAL := [0.0, 0.0, 0, 0, 0, 0];
+	nCounter : INT := 0;
+
+	lrTs : LREAL := 0.001;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+FOR nCounter := 0 TO 4 DO
+	arPositionHistory [5 - nCounter] := arPositionHistory[ 5 - nCounter -1];
+	arVeloHistory [5 - nCounter] := arVeloHistory[ 5 - nCounter -1];
+	arAccelerationHistory [5 - nCounter] := arAccelerationHistory[ 5 - nCounter -1];
+END_FOR
+
+
+arAccelerationHistory[0] := lrInput / lrM - lrC * arVeloHistory[0] / lrM;
+
+arVeloHistory[0] := arVeloHistory[0] + 0.5 * lrTs * (arAccelerationHistory[0]+arAccelerationHistory[1]);
+
+arPositionHistory[0] := arPositionHistory[0] + 0.5 * lrTs * (arVeloHistory[0]+arVeloHistory[1]);
+
+lrOutput := arPositionHistory[0];]]></ST>
+    </Implementation>
+    <LineIds Name="PlantNo2">
+      <LineId Id="51" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="119" Count="1" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="130" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

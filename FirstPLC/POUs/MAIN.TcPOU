@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.8">
+  <POU Name="MAIN" Id="{3eb3f074-ae9c-4251-9b91-552561153bc0}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+    nState : INT := 0;
+    fbMyPid : SimplePID;
+    lrKp : LREAL := 1000.000;
+    lrTn : LREAL := 0.159200;
+    lrTv : LREAL := 0.0031847;
+    lrTd : LREAL := 0.07647;
+    lrActualPosition AT%I* : LREAL;
+    lrControllerOutput AT%Q* : LREAL;
+    lrSetpoint : LREAL := 0.0;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE nState OF
+    10:
+        fbMyPid.lrKp := lrKp;
+        fbMyPid.lrTn := lrTn;
+        fbMyPid.lrTv := lrTv;
+        fbMyPid.lrTd := lrTd;
+
+        fbMyPid(
+            lrSetpointPosition := lrSetpoint,
+            lrActualPosition := lrActualPosition,
+            bStart := TRUE,
+            lrControlOutput => lrControllerOutput
+        );
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="350" Count="12" />
+      <LineId Id="140" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

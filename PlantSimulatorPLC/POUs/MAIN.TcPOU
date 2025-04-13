@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.8">
+  <POU Name="MAIN" Id="{65c70385-e05c-4e29-a597-92e55abc482c}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	lrIn AT%I* : LREAL := 0;
+	nCheckCount : INT := 0;
+	
+	fbPlantNo1: PlantNo1;
+	fbPlantNo2: PlantNo2;
+	lrOutput AT%Q* : LREAL := 0.0;
+	
+	nPlant :INT := 0;
+	
+	lrTempOutput : LREAL := 0.0;
+	
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE nPlant OF
+	10:
+		fbPlantNo1(lrInput := lrIn,
+		lrOutput => lrOutput);
+		
+	20:
+		fbPlantNo2(lrInput := lrIn,
+			lrM := 3.5,
+			lrC := 10,
+		lrOutput => lrOutput);
+		
+	30:
+		fbPlantNo1(lrInput := lrIn,
+			lrOutput => lrTempOutput);
+		fbPlantNo2(lrInput := lrTempOutput,
+			lrM := 3.5,
+			lrC := 10,
+			lrOutput => lrOutput);
+			
+END_CASE
+
+
+	
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="28" Count="1" />
+      <LineId Id="31" Count="4" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="36" Count="5" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="11" Count="3" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

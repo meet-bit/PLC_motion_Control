@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="PlantNo1" Id="{17721785-2715-4c55-886a-12a5c9e3ba34}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PlantNo1
+VAR_INPUT
+	lrInput : LREAL := 0.0;	
+END_VAR
+
+VAR_OUTPUT
+	lrOutput : LREAL := 0.0;
+END_VAR
+
+VAR
+	lrLastInput : LREAL := 0.0;
+	lrLastOutput : LREAL := 0.0;
+	lrTs : LREAL := 0.001;
+	lr2OverTs : lreal := 2/0.001;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[lr2OverTs := 2.0 / lrTs;
+lrOutput := ((lr2OverTs - 500.0) * lrLastOutput + 500.0 * (lrInput + lrLastInput)) / (lr2OverTs + 500.0);
+lrLastOutput := lrOutput;
+lrLastInput := lrInput;]]></ST>
+    </Implementation>
+    <LineIds Name="PlantNo1">
+      <LineId Id="18" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="20" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
