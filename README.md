@@ -1,5 +1,5 @@
 # PLC Motion Control  
-**TwinCAT NC Axis + DSA + PID Control Module**
+**TwinCAT NC Axis + DSA + PID Control Module (discretized with Tustin)**
 
 ---
 
